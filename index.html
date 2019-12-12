@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>EnDec</title>
+    <meta name="description" content="Encode/Decode: Base64, URI, etc.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Abhishek Kumar (akbittu@gmail.com)">
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest"></link>
+    <style id="webmakerstyle">
+    .box {
+        padding: 1em;
+    }
+
+    .button.tertiary {
+        background-color: royalblue;
+        color: white;
+    }
+
+    #io_ta {
+        height: calc(100vh - 200px);
+    }
+
+    .error {
+        color: firebrick;
+        font-size: small;
+    }
+
+    .noselect {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <div class="nav-left">
+            <a class="brand" href="#">ENDEC</a>
+            <div class="tabs">
+                <a id="b64_lnk" class="active noselect">Base64</a>
+                <a id="uri_lnk" class="noselect">URI</a>
+            </div>
+        </div>
+    </nav>
+    <div class="box">
+        <div class="card">
+            <header>
+                <h4 id="ct_hdr">Base64</h4>
+            </header>
+            <p>
+                <textarea id="io_ta"></textarea>
+            </p>
+            <footer class="is-right">
+                <a id="enc_btn" class="button primary noselect">Encode</a>
+                <a id="dec_btn" class="button tertiary noselect">Decode</a>
+            </footer>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    $((e) => {
+        // console.log('main');
+
+        let algo = 'b64';
+        $('#b64_lnk').on('click', (e) => {
+            algo = 'b64';
+            $('.tabs a').removeClass('active');
+            $(e.target).addClass('active');
+            $('#ct_hdr').html('Base64');
+            $('#io_ta').val('');
+        });
+        $('#uri_lnk').on('click', (e) => {
+            algo = 'uri';
+            $('.tabs a').removeClass('active');
+            $(e.target).addClass('active');
+            $('#ct_hdr').html('Uniform Resource Identifier (URI)');
+            $('#io_ta').val('');
+        });
+
+        $('#enc_btn').on('click', (e) => {
+            let input, output;
+            switch (algo) {
+                case 'b64':
+                    input = $('#io_ta').val();
+                    output = btoa(input).toString();
+                    $('#io_ta').val(output);
+                    break;
+                case 'uri':
+                    input = $('#io_ta').val();
+                    output = encodeURIComponent(input).replace(/'/g, "%27").replace(/"/g, "%22");
+                    $('#io_ta').val(output);
+                    break;
+            }
+        });
+        $('#dec_btn').on('click', (e) => {
+            let input, output;
+            switch (algo) {
+                case 'b64':
+                    input = $('#io_ta').val();
+                    try {
+                        output = atob(input).toString();
+                    } catch (e) {
+                        output = input;
+                    }
+                    $('#io_ta').val(output);
+                    break;
+                case 'uri':
+                    input = $('#io_ta').val();
+                    output = decodeURIComponent(input.replace(/\+/g, " "));
+                    $('#io_ta').val(output);
+                    break;
+            }
+        });
+
+    });
+    </script>
+</body>
+
+</html>
